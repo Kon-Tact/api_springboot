@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Cloner le dépôt Git
-                git 'https://github.com/your-repo/your-spring-boot-project.git'
+                git 'https://github.com/your-repo/your-spring-boot-project.git', branch: '**'
             }
         }
         stage('Build') {
