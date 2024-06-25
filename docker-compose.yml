@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: custom-mysql:8.0
+    container_name: mon-mysql
+    environment:
+      MYSQL_DATABASE: student
+      MYSQL_USER: math
+      MYSQL_PASSWORD: math
+      MYSQL_ROOT_PASSWORD: math
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - mynetwork
+    ports:
+      - "3306:3306"
+
+  springboot:
+    image: my-spring-boot-app
+    container_name: my-spring-boot-app
+    depends_on:
+      - mysql
+    networks:
+      - mynetwork
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mon-mysql:3306/student
+      SPRING_DATASOURCE_USERNAME: math
+      SPRING_DATASOURCE_PASSWORD: math
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+      SERVER_SSL_KEY_STORE: classpath:keystore/keystore.p12
+      SERVER_SSL_KEY_STORE_PASSWORD: password
+      SERVER_SSL_KEY_STORE_TYPE: PKCS12
+      SERVER_SSL_KEY_ALIAS: apikey
+      SERVER_SSL_ENABLED: "true"
+
+  vuejs:
+    image: my-vuejs-app
+    container_name: vuejs-app
+    depends_on:
+      - springboot
+    networks:
+      - mynetwork
+    ports:
+      - "8081:80"  # HTTP port
+      - "8443:443" # HTTPS port
+    environment:
+      VUE_APP_API_URL: https://my-spring-boot-app:8080
+
+volumes:
+  mysql_data:
+
+networks:
+  mynetwork:
+    driver: bridge
