@@ -24,6 +24,4 @@ public class StudentsApiApplication implements CommandLineRunner {
 		accountService.superUserManagement();
 	}
 
-	//again a test for jenkins
-
 }
