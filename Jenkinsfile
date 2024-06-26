@@ -2,47 +2,40 @@ pipeline {
     agent any
 
     tools {
-        // Installe la version de Maven nécessaire
-        maven 'Maven 3.9.8' // Assurez-vous que cette version est installée et configurée dans Jenkins
-        git 'git' // Assurez-vous que cette version est installée et configurée dans Jenkins
+        maven 'Maven 3.9.8'
+        git 'git'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Cloner le dépôt Git
-                git branch: 'main', url: 'https://github.com/Kon-Tact/api_springboot.git'
+                script {
+                    sh 'git --version'
+                    sh 'git clone -b main https://github.com/Kon-Tact/api_springboot.git'
+                }
             }
         }
         stage('Build') {
             steps {
-                // Construire le projet avec Maven
                 sh 'mvn clean package'
             }
         }
         stage('Test') {
             steps {
-                // Lancer les tests unitaires
                 sh 'mvn test'
             }
         }
         stage('Run Application') {
             steps {
-                // Démarrer l'application Spring Boot pour vérifier qu'elle se lance correctement
                 sh 'java -jar target/your-app.jar &'
-                // Vous pouvez ajouter des vérifications supplémentaires ici pour vous assurer que l'application s'est bien lancée
             }
         }
     }
 
     post {
         always {
-            // Archive les résultats des tests
             junit '**/target/surefire-reports/*.xml'
-            // Arrêter l'application Spring Boot
             sh 'pkill -f "java -jar target/your-app.jar"'
         }
     }
 }
-
-Configuration dans Jenkin
