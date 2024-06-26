@@ -4,7 +4,7 @@ pipeline {
     tools {
         // Installe la version de Maven nécessaire
         maven 'Maven 3.9.8' // Assurez-vous que cette version est installée et configurée dans Jenkins
-        git 'Git' // Assurez-vous que cette version est installée et configurée dans Jenkins
+        git 'git' // Assurez-vous que cette version est installée et configurée dans Jenkins
     }
 
     stages {
